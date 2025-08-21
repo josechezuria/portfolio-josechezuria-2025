@@ -1,0 +1,13 @@
+services:
+  portfolio:
+    build: .
+    container_name: josechezuria-portfolio
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
