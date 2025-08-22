@@ -1,9 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Jose A Echezuria - Portfolio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>josechezuria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/index.css">
 </head>
 <body>
-  <h1>Hello 🚀 Portfolio is livee with Node.js!</h1>
+  <header>
+    <nav class="navbar">
+      <div class="logo">JOSECHEZURIA</div>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      <div class="burger" id="burger">
+        ☰
+      </div>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1 class="hero-title">Jose Echezuria</h1>
+    <h2 class="hero-subtitle">Full Stack Dev / Homelab Nerd</h2>
+    <p class="based-htx">Based in HTX</p>
+    <div class="hero-buttons-container">
+      <button class="button contact">Contact Me</button>
+      <button class="button projects">Projects</button>
+    </div>
+  </div>
+
+  <div class="aboutme">
+      <h2 class="aboutme-title">< About Me /></h2>
+      <p class="aboutme-content">
+        I'm Jose A. Echezuria — a full-stack developer from Venezuela, now based in Houston, TX. I build fast, useful software and self-host everything I make.
+
+I specialize in JavaScript, backend systems, and infrastructure. My current stack is PostgreSQL, Express, and React — all running on my own Proxmox-powered server.
+
+I'm about to start a Computer Science degree, and I’m always learning — from containerizing apps to fine-tuning my homelab.
+
+If it's open-source, fast, and functional... I’m into it.
+      </p>
+  </div>
+  <script src="/index.js"></script>
 </body>
 </html>

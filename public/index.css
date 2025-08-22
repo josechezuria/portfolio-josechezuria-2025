@@ -1,0 +1,158 @@
+/* Colors */
+:root {
+  --white: #F2F2F2;
+  --black: #0D0D0D;
+  --cyan: #00FFF0;
+}
+
+body {
+  background: var(--black);
+  font-family: "Oswald", sans-serif;
+}
+
+.logo {
+  color: var(--white);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--black);
+  padding: 1rem;
+}
+
+/* Links (desktop) */
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--cyan);
+}
+
+/* Burger icon */
+.burger {
+  display: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1100;
+  position: relative;
+  color: var(--white);
+  transition: color 0.3s ease;
+}
+
+/* Active burger = cyan */
+.burger.active {
+  color: var(--cyan);
+}
+
+/* Mobile menu */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 60%; /* covers part of screen */
+    background: var(--black);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 4rem 2rem;
+    gap: 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  .nav-links.show {
+    transform: translateX(0);
+  }
+  .nav-links a {
+    color: var(--white);
+    font-size: 1.4rem;
+  }
+  .nav-links a:hover {
+    color: var(--cyan);
+  }
+  .burger {
+    display: block;
+  }
+}
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hero-title {
+  color: var(--white);
+  font-weight: 400;
+  font-size: 50px;
+  margin: 0;
+}
+
+.hero-subtitle {
+  background: linear-gradient(to right, #00f5a0, #00d9f5);
+  background-clip: text;
+  -webkit-background-clip: text; /* Safari/Chrome support */
+  color: transparent;
+  -webkit-text-fill-color: transparent; /* Safari fix */
+  font-weight: 400;
+  font-size: 30px;
+  text-align: center;
+  margin: 0;
+}
+
+.based-htx {
+  color: var(--white);
+  text-align: center;
+  font-size: 18px;
+  margin: 0;
+}
+
+.hero-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.button {
+  width: 119px;
+  height: 43px;
+  border-radius: 21px;
+  background-image: linear-gradient(to right, #00f5a0, #00d9f5);
+  border-style: none;
+  color: var(--black);
+  font-family: "Oswald", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.aboutme {
+  color: var(--white);
+  margin: 20px;
+}
+
+.aboutme-title {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.aboutme-content {
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.27;
+  letter-spacing: normal;
+  text-align: left;
+}/*# sourceMappingURL=index.css.map */
