@@ -37,8 +37,12 @@
         <h2 class="hero-subtitle">Full Stack Dev / Homelab Nerd</h2>
         <p class="based-htx">Based in HTX</p>
         <div class="hero-buttons-container">
-          <button class="button contact">Contact Me</button>
-          <button class="button projects">Projects</button>
+          <button class="button" onclick="location.href='#contact'">
+            Contact Me
+          </button>
+          <button class="button" onclick="location.href='#projects'">
+            Projects
+          </button>
         </div>
       </section>
 
@@ -167,25 +171,23 @@
         </section>
       </section>
 
-      <section class="projects-section">
+      <!-- Projects -->
+      <section class="projects-section" id="projects">
         <h3>< Projects /></h3>
 
         <div class="projects-grid">
-          <!-- Project Card -->
           <div class="project-card">
             <img
               src="/images/quizzaithumbnail.png"
               alt="Quizz.AI screenshot"
               class="project-image"
             />
-
             <div class="project-tags">
               <span>JavaScript</span>
               <span>Node.js</span>
               <span>Express</span>
-              <span>Express</span>
+              <span>PostgreSQL</span>
             </div>
-
             <div class="project-info">
               <h4 class="project-title">Quizz.AI</h4>
               <p class="project-desc">
@@ -197,13 +199,11 @@
               </p>
             </div>
           </div>
-          <!-- /Project Card -->
 
-          <!-- Copy for more projects -->
           <div class="project-card">
             <img
               src="/images/flash-store.png"
-              alt="Another Project"
+              alt="Flash Store screenshot"
               class="project-image"
             />
             <div class="project-tags">
@@ -227,31 +227,26 @@
         </div>
       </section>
 
-      <section class="homelab">
+      <!-- Homelab -->
+      <section class="homelab" id="homelab">
         <h2 class="h2-style">< Homelab /></h2>
-
-        <!-- Current Setup -->
         <h3 class="h3-minis">< Current Setup /></h3>
         <div class="diagram-container">
           <pre id="diagram-current"></pre>
         </div>
-
-        <!-- Quick Overview -->
         <h3 class="h3-minis">< Quick Overview /></h3>
         <div class="diagram-container">
           <pre id="diagram-overview"></pre>
         </div>
-
-        <!-- Future Setup -->
         <h3 class="h3-minis">< Future Setup /></h3>
         <div class="diagram-container">
           <pre id="diagram-future"></pre>
         </div>
       </section>
 
+      <!-- Contact -->
       <section class="contact" id="contact">
         <h2 class="h2-style">Ready To Work With Me?</h2>
-
         <div class="contact-buttons">
           <a
             href="https://linkedin.com/in/josechezuria"
@@ -261,16 +256,14 @@
           >
           <a href="/resume.pdf" target="_blank" class="button">Resume</a>
         </div>
-
         <p class="contact-email">
           <a href="mailto:devlab@josechezuria.com">devlab@josechezuria.com</a>
         </p>
-
         <div class="contact-icons">
           <a href="https://github.com/josechezuria" target="_blank"
             ><img src="/images/github.png" alt="GitHub"
           /></a>
-          <a href="https://x.com/josechezuria target="_blank"
+          <a href="https://x.com/josechezuria" target="_blank"
             ><img src="/images/x.png" alt="X (Twitter)"
           /></a>
           <a href="https://instagram.com/josechezuria" target="_blank"
@@ -279,11 +272,13 @@
         </div>
       </section>
 
+      <!-- Footer -->
       <footer class="footer">
         <p>© 2025 Jose A. Echezuria — All Rights Reserved</p>
         <p>Built with ❤️, self-hosted in my <a href="#homelab">Homelab</a></p>
       </footer>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="/index.js"></script>
   </body>

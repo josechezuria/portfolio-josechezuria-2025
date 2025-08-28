@@ -129,6 +129,8 @@ body {
   font-weight: 500;
   cursor: pointer;
   color: var(--black);
+  text-decoration: none;
+  text-align: center;
 }
 
 /* ABOUT */
