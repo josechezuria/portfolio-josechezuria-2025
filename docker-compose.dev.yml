@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  portfolio-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: portfolio-josechezuria-dev
+    restart: unless-stopped
+    ports:
+      - "${EXTERNAL_PORT_DEV}:${INTERNAL_PORT_DEV}"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${INTERNAL_PORT_DEV}
+    volumes:
+      # Mount source code for hot reload
+      - ./:/app
+      - /app/node_modules
+    networks:
+      - portfolio-dev-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:' + process.env.PORT, (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+    labels:
+      - "com.josechezuria.app=portfolio"
+      - "com.josechezuria.environment=development"
+
+networks:
+  portfolio-dev-network:
+    driver: bridge

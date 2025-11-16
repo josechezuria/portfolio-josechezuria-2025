@@ -1,13 +1,49 @@
+version: '3.8'
+
 services:
   portfolio:
-    build: .
-    container_name: josechezuria-portfolio
-    ports:
-      - "${PORT}:${PORT}"
-    env_file:
-      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: portfolio-josechezuria
     restart: unless-stopped
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    command: npm run dev
+    ports:
+      - "${EXTERNAL_PORT}:${INTERNAL_PORT}"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${INTERNAL_PORT}
+    networks:
+      - portfolio-network
+    # Security: Run as non-root user
+    user: "1001:1001"
+    # Security: Read-only root filesystem
+    read_only: true
+    # Security: Drop all capabilities
+    cap_drop:
+      - ALL
+    # Security: Prevent privilege escalation
+    security_opt:
+      - no-new-privileges:true
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:' + process.env.PORT, (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+    labels:
+      - "com.josechezuria.app=portfolio"
+      - "com.josechezuria.environment=production"
+
+networks:
+  portfolio-network:
+    driver: bridge

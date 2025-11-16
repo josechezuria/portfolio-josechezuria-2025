@@ -1,0 +1,359 @@
+================================================================================
+                HOMELAB DEPLOYMENT CHECKLIST
+        Follow these steps when you get home
+================================================================================
+
+WHEN YOU GET TO YOUR HOMELAB - FOLLOW THESE EXACT STEPS:
+
+================================================================================
+                    FIRST TIME SETUP
+================================================================================
+
+[ ] Step 1: SSH into your homelab
+    -------------------------------
+    ssh your-username@your-homelab-ip
+
+[ ] Step 2: Navigate to where you want the project
+    -------------------------------
+    cd /path/to/your/projects
+    # Example: cd /home/jose/projects
+
+[ ] Step 3: Clone the repository
+    -------------------------------
+    git clone https://github.com/your-username/portfolio-josechezuria-2025.git
+    cd portfolio-josechezuria-2025
+
+[ ] Step 4: Verify Docker is installed
+    -------------------------------
+    docker --version
+    docker compose version
+
+    If not installed:
+    - Install Docker: https://docs.docker.com/engine/install/
+    - Install Docker Compose (usually comes with Docker)
+
+[ ] Step 5: Create .env file
+    -------------------------------
+    cp .env.example .env
+
+    The .env file already has:
+    PORT=3001
+    NODE_ENV=production
+
+    You're good to go!
+
+[ ] Step 6: Build the production image
+    -------------------------------
+    docker compose build
+
+    This will take a few minutes the first time.
+    It's compiling SCSS, installing dependencies, etc.
+
+[ ] Step 7: Start production
+    -------------------------------
+    docker compose up -d
+
+    The -d flag runs it in the background
+
+[ ] Step 8: Check if it's running
+    -------------------------------
+    docker ps
+
+    You should see "portfolio-josechezuria" in the list
+
+[ ] Step 9: Check the logs
+    -------------------------------
+    docker logs -f portfolio-josechezuria
+
+    You should see:
+    🌐 Portfolio running at http://0.0.0.0:3001
+    🔒 Environment: production
+
+    Press CTRL+C to exit logs
+
+[ ] Step 10: Test access
+    -------------------------------
+    From homelab: curl http://localhost:3001
+    From another device: http://your-homelab-ip:3001
+
+[ ] Step 11: Configure Nginx (Optional)
+    -------------------------------
+    If you want SSL and a domain name, see DEPLOYMENT.md
+    for Nginx reverse proxy configuration
+
+================================================================================
+                UPDATING PRODUCTION (AFTER CHANGES)
+================================================================================
+
+When you make changes on your laptop and want to deploy:
+
+[ ] Step 1: On your laptop - commit and push
+    -------------------------------
+    git add .
+    git commit -m "Description of changes"
+    git push origin main
+
+[ ] Step 2: SSH to homelab
+    -------------------------------
+    ssh your-username@your-homelab-ip
+    cd portfolio-josechezuria-2025
+
+[ ] Step 3: Pull latest code
+    -------------------------------
+    git pull origin main
+
+    If you see conflicts, you need to resolve them first
+
+[ ] Step 4: Rebuild and restart
+    -------------------------------
+    docker compose down
+    docker compose build
+    docker compose up -d
+
+[ ] Step 5: Verify it worked
+    -------------------------------
+    docker logs -f portfolio-josechezuria
+
+    Check your site: http://homelab-ip:3001
+
+================================================================================
+            SETTING UP NGINX REVERSE PROXY (OPTIONAL)
+================================================================================
+
+If you want https://josechezuria.com instead of http://homelab-ip:3001:
+
+[ ] Step 1: Install Nginx on homelab
+    -------------------------------
+    sudo apt update
+    sudo apt install nginx
+
+[ ] Step 2: Create Nginx config
+    -------------------------------
+    sudo nano /etc/nginx/sites-available/portfolio
+
+    Paste this config:
+
+    server {
+        listen 80;
+        server_name josechezuria.com www.josechezuria.com;
+
+        location / {
+            proxy_pass http://localhost:3001;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_cache_bypass $http_upgrade;
+        }
+    }
+
+[ ] Step 3: Enable the site
+    -------------------------------
+    sudo ln -s /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/
+    sudo nginx -t
+    sudo systemctl reload nginx
+
+[ ] Step 4: Add SSL with Certbot
+    -------------------------------
+    sudo apt install certbot python3-certbot-nginx
+    sudo certbot --nginx -d josechezuria.com -d www.josechezuria.com
+
+    Follow the prompts, it will auto-configure SSL
+
+[ ] Step 5: Test
+    -------------------------------
+    https://josechezuria.com
+
+    Should now work with SSL!
+
+================================================================================
+                MANAGING DOCKER CONTAINERS
+================================================================================
+
+View running containers:
+------------------------
+docker ps
+
+View all containers (including stopped):
+------------------------
+docker ps -a
+
+Start production:
+------------------------
+docker compose up -d
+
+Stop production:
+------------------------
+docker compose down
+
+Restart production:
+------------------------
+docker compose restart
+
+View logs:
+------------------------
+docker logs -f portfolio-josechezuria
+
+Enter the container (for debugging):
+------------------------
+docker exec -it portfolio-josechezuria sh
+
+View container resource usage:
+------------------------
+docker stats portfolio-josechezuria
+
+Remove everything and start fresh:
+------------------------
+docker compose down
+docker system prune -a  # WARNING: Removes all unused images!
+docker compose build
+docker compose up -d
+
+================================================================================
+                MONITORING & MAINTENANCE
+================================================================================
+
+[ ] Set up Uptime Kuma (if you have it)
+    -------------------------------
+    Monitor http://homelab-ip:3001
+    Get alerts if it goes down
+
+[ ] Set up automatic updates
+    -------------------------------
+    Create a cron job to pull and rebuild weekly:
+
+    crontab -e
+
+    Add:
+    0 2 * * 0 cd /path/to/portfolio-josechezuria-2025 && git pull && docker compose down && docker compose build && docker compose up -d
+
+    (Runs every Sunday at 2 AM)
+
+[ ] Check logs regularly
+    -------------------------------
+    docker logs --tail 100 portfolio-josechezuria
+
+[ ] Monitor resource usage
+    -------------------------------
+    docker stats portfolio-josechezuria
+
+[ ] Backup important files
+    -------------------------------
+    - .env file
+    - public/resume.pdf
+    - public/images/
+
+================================================================================
+                FIREWALL CONFIGURATION
+================================================================================
+
+If using UFW (Ubuntu):
+------------------------
+sudo ufw allow 3001/tcp       # For direct access
+sudo ufw allow 80/tcp         # For HTTP (Nginx)
+sudo ufw allow 443/tcp        # For HTTPS (Nginx)
+sudo ufw allow 22/tcp         # For SSH (if not already allowed)
+sudo ufw enable
+
+If using firewalld (CentOS/RHEL):
+------------------------
+sudo firewall-cmd --permanent --add-port=3001/tcp
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --permanent --add-port=443/tcp
+sudo firewall-cmd --reload
+
+================================================================================
+                TROUBLESHOOTING
+================================================================================
+
+Container won't start:
+------------------------
+1. docker logs portfolio-josechezuria
+2. Check if port 3001 is already in use: sudo lsof -i :3001
+3. Check .env file exists and has correct values
+
+Can't access from outside:
+------------------------
+1. Check firewall: sudo ufw status
+2. Check Docker is running: docker ps
+3. Check port forwarding in router (if accessing from internet)
+
+Changes not showing:
+------------------------
+1. Did you rebuild? docker compose build
+2. Did you restart? docker compose up -d
+3. Clear browser cache
+
+Permission errors:
+------------------------
+1. Add your user to docker group: sudo usermod -aG docker $USER
+2. Log out and log back in
+3. Or use sudo: sudo docker compose up -d
+
+================================================================================
+                QUICK COMMANDS REFERENCE
+================================================================================
+
+Deploy fresh:
+    docker compose build && docker compose up -d
+
+Update from git:
+    git pull && docker compose down && docker compose build && docker compose up -d
+
+Check status:
+    docker ps && docker logs --tail 20 portfolio-josechezuria
+
+Stop everything:
+    docker compose down
+
+Complete rebuild:
+    docker compose down && docker system prune -f && docker compose build && docker compose up -d
+
+================================================================================
+                YOUR CURRENT SETUP
+================================================================================
+
+Development Port: 3002 (on your laptop)
+Production Port:  3001 (on your homelab)
+
+Production will be accessed at:
+- Locally on homelab: http://localhost:3001
+- From network: http://homelab-ip:3001
+- With Nginx: https://josechezuria.com
+
+Files ready to deploy:
+✓ Dockerfile (production optimized)
+✓ docker-compose.yml (production config)
+✓ docker-compose.dev.yml (development config)
+✓ .env (production settings)
+✓ .env.example (template)
+✓ .dockerignore (security)
+✓ .gitignore (security)
+
+All security features enabled:
+✓ Helmet.js
+✓ Rate limiting
+✓ Non-root user
+✓ Resource limits
+✓ Health checks
+
+================================================================================
+                NEXT STEPS
+================================================================================
+
+1. When you get home, follow the FIRST TIME SETUP checklist above
+2. Once deployed, add the homelab IP to your Tailscale
+3. Configure Nginx for SSL (optional but recommended)
+4. Set up monitoring with Uptime Kuma
+5. Start making changes in DEV and deploying to PROD!
+
+Need help? Check:
+- WORKFLOW.txt (dev to prod process)
+- QUICKSTART.txt (all commands)
+- DEPLOYMENT.md (detailed deployment)
+- SECURITY.md (security info)
+
+================================================================================

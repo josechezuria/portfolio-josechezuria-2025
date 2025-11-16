@@ -14,34 +14,47 @@
       href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <link rel="stylesheet" href="/index.css" />
   </head>
   <body>
     <div class="wrapper">
       <!-- Header -->
-      <header>
+      <header class="header">
         <nav class="navbar">
           <div class="logo">JOSECHEZURIA</div>
-          <ul class="nav-links" id="nav-links">
+          <button
+            class="mobile-menu-toggle"
+            id="mobile-menu-toggle"
+            aria-label="Toggle menu"
+          >
+            <span class="hamburger"></span>
+          </button>
+          <ul class="nav-menu" id="nav-menu">
             <li><a href="#about">About</a></li>
-            <li><a href="#projects">Projects</a></li>
+            <li><a href="#blog">Blog</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
-          <div class="burger" id="burger">☰</div>
         </nav>
       </header>
 
       <!-- Hero Section -->
       <section class="hero">
+        <img
+          src="/images/profile.png"
+          alt="Jose Echezuria"
+          class="hero-profile-image"
+        />
         <h1 class="hero-title">Jose Echezuria</h1>
         <h2 class="hero-subtitle">Full Stack Dev / Homelab Nerd</h2>
         <p class="based-htx">Based in HTX</p>
         <div class="hero-buttons-container">
+          <button class="button" onclick="location.href='#blog'">Blog</button>
           <button class="button" onclick="location.href='#contact'">
             Contact Me
-          </button>
-          <button class="button" onclick="location.href='#projects'">
-            Projects
           </button>
         </div>
       </section>
@@ -50,14 +63,17 @@
       <section class="aboutme" id="about">
         <h2 class="h2-style">< About Me /></h2>
         <p class="aboutme-content">
-          I'm Jose A. Echezuria — a full-stack developer from Venezuela, now
-          based in Houston, TX. I build fast, useful software and self-host
-          everything I make. I specialize in JavaScript, backend systems, and
-          infrastructure. My current stack is PostgreSQL, Express, and React —
-          all running on my own Proxmox-powered server. I'm about to start a
-          Computer Science degree, and I’m always learning — from containerizing
-          apps to fine-tuning my homelab. If it's open-source, fast, and
-          functional... I’m into it.
+          I'm Jose A. Echezuria a sysadmin and homelab enthusiast from
+          Venezuela, now based in Houston, TX. I build and manage self-hosted
+          infrastructure, specializing in Linux systems, Docker
+          containerization, and DevOps practices. My homelab runs on Proxmox
+          with services like PostgreSQL, Nginx, Pi-hole, Grafana, and custom
+          applications all deployed with Docker and monitored 24/7. I'm
+          self-taught through hands-on homelabbing, bootcamps, and
+          certifications, and I'm about to start a Computer Science degree to
+          formalize my knowledge. From automating deployments to optimizing
+          server performance, if it's open-source, self-hosted, and efficient...
+          I'm into it.
         </p>
 
         <!-- Languages & Frameworks -->
@@ -171,58 +187,60 @@
         </section>
       </section>
 
-      <!-- Projects -->
-      <section class="projects-section" id="projects">
-        <h3>< Projects /></h3>
+      <!-- Blog & Documentation -->
+      <section class="blog-section" id="blog">
+        <h2 class="h2-style">< Blog & Documentation /></h2>
 
-        <div class="projects-grid">
-          <div class="project-card">
-            <img
-              src="/images/quizzaithumbnail.png"
-              alt="Quizz.AI screenshot"
-              class="project-image"
-            />
-            <div class="project-tags">
-              <span>JavaScript</span>
-              <span>Node.js</span>
-              <span>Express</span>
-              <span>PostgreSQL</span>
+        <div class="blog-grid">
+          <!-- Blog Post 1 - Example -->
+          <div class="blog-card" data-post="docker-homelab">
+            <div class="blog-header">
+              <h4>Docker Homelab Setup</h4>
+              <span class="blog-badge">Guide</span>
             </div>
-            <div class="project-info">
-              <h4 class="project-title">Quizz.AI</h4>
-              <p class="project-desc">
-                Quizz.AI is an interactive AI-powered quiz game that generates
-                unique questions on the fly and tracks user performance in real
-                time. Built with Node.js, Express, and PostgreSQL, it blends
-                playful design with solid backend logic, running fully
-                self-hosted in a homelab environment.
-              </p>
+            <p class="blog-preview">
+              Complete guide to setting up Docker containers in your homelab
+            </p>
+            <div class="blog-tags">
+              <span>Docker</span>
+              <span>Linux</span>
+              <span>Homelab</span>
             </div>
+            <button class="blog-read-more">Read More →</button>
           </div>
 
-          <div class="project-card">
-            <img
-              src="/images/flash-store.png"
-              alt="Flash Store screenshot"
-              class="project-image"
-            />
-            <div class="project-tags">
-              <span>Express</span>
-              <span>EJS</span>
-              <span>API</span>
-              <span>Bootstrap</span>
-              <span>Performance</span>
+          <!-- Blog Post 2 - Example -->
+          <div class="blog-card" data-post="proxmox-setup">
+            <div class="blog-header">
+              <h4>Proxmox VE Guide</h4>
+              <span class="blog-badge">Tutorial</span>
             </div>
-            <div class="project-info">
-              <h4 class="project-title">Flash-store</h4>
-              <p class="project-desc">
-                Flash Store is an ultra-fast, content-heavy eCommerce demo site
-                designed with performance in mind. Powered by PostgreSQL and an
-                Express API with a lightweight EJS + Bootstrap frontend, it
-                showcases extreme optimization techniques — prefetching, minimal
-                routing, and smooth scaling — all deployed for speed.
-              </p>
+            <p class="blog-preview">
+              Learn how to configure and optimize Proxmox for home use
+            </p>
+            <div class="blog-tags">
+              <span>Proxmox</span>
+              <span>Virtualization</span>
+              <span>Self-Hosted</span>
             </div>
+            <button class="blog-read-more">Read More →</button>
+          </div>
+
+          <!-- Blog Post 3 - Example -->
+          <div class="blog-card" data-post="nginx-reverse-proxy">
+            <div class="blog-header">
+              <h4>NGINX Reverse Proxy</h4>
+              <span class="blog-badge">Documentation</span>
+            </div>
+            <p class="blog-preview">
+              Setting up NGINX as a reverse proxy with SSL certificates
+            </p>
+            <div class="blog-tags">
+              <span>NGINX</span>
+              <span>Security</span>
+              <span>DevOps</span>
+            </div>
+            <button class="blog-read-more">Read More →</button>
           </div>
         </div>
       </section>
@@ -230,19 +248,115 @@
       <!-- Homelab -->
       <section class="homelab" id="homelab">
         <h2 class="h2-style">< Homelab /></h2>
-        <h3 class="h3-minis">< Current Setup /></h3>
-        <div class="diagram-container">
-          <pre id="diagram-current"></pre>
+
+        <h3 class="h3-minis">⚙️ Current Setup — November 2025</h3>
+        <div class="homelab-cards">
+          <div class="homelab-card" data-node="phoenix-current">
+            <div class="card-header">
+              <h4>Phoenix</h4>
+              <span class="card-badge">Active</span>
+            </div>
+            <p class="card-purpose">Main orchestration & service host</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="atlas-current">
+            <div class="card-header">
+              <h4>Atlas</h4>
+              <span class="card-badge">Active</span>
+            </div>
+            <p class="card-purpose">Storage backend + cloud</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="helios-current">
+            <div class="card-header">
+              <h4>Helios</h4>
+              <span class="card-badge">Active</span>
+            </div>
+            <p class="card-purpose">Testing & game servers</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="pi-fleet-current">
+            <div class="card-header">
+              <h4>Raspberry Pi Fleet</h4>
+              <span class="card-badge planned">Planned</span>
+            </div>
+            <p class="card-purpose">Monitoring & redundancy</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
         </div>
-        <h3 class="h3-minis">< Quick Overview /></h3>
-        <div class="diagram-container">
-          <pre id="diagram-overview"></pre>
-        </div>
-        <h3 class="h3-minis">< Future Setup /></h3>
-        <div class="diagram-container">
-          <pre id="diagram-future"></pre>
+
+        <h3 class="h3-minis">🚀 Future Setup — 2026</h3>
+        <div class="homelab-cards">
+          <div class="homelab-card" data-node="phoenix-future">
+            <div class="card-header">
+              <h4>Phoenix 2.0</h4>
+              <span class="card-badge future">Future</span>
+            </div>
+            <p class="card-purpose">Orchestration node</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="helios-future">
+            <div class="card-header">
+              <h4>Helios 2.0</h4>
+              <span class="card-badge future">Future</span>
+            </div>
+            <p class="card-purpose">Lightweight node</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="artemis-future">
+            <div class="card-header">
+              <h4>Artemis</h4>
+              <span class="card-badge future">New</span>
+            </div>
+            <p class="card-purpose">High-performance node</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="atlas-future">
+            <div class="card-header">
+              <h4>Atlas 2.0</h4>
+              <span class="card-badge future">Future</span>
+            </div>
+            <p class="card-purpose">NAS + Cloud storage</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
+
+          <div class="homelab-card" data-node="pi-fleet-future">
+            <div class="card-header">
+              <h4>Raspberry Pi Fleet</h4>
+              <span class="card-badge future">Future</span>
+            </div>
+            <p class="card-purpose">External monitoring & redundancy</p>
+            <button class="card-details-btn">View Details →</button>
+          </div>
         </div>
       </section>
+
+      <!-- Modal for Homelab Details -->
+      <div id="homelab-modal" class="modal">
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <h3 id="modal-title"></h3>
+          <p id="modal-purpose" class="modal-purpose"></p>
+          <div id="modal-services" class="modal-services"></div>
+        </div>
+      </div>
+
+      <!-- Modal for Blog Posts -->
+      <div id="blog-modal" class="modal">
+        <div class="modal-content">
+          <span class="modal-close blog-modal-close">&times;</span>
+          <h3 id="blog-modal-title"></h3>
+          <div id="blog-modal-meta" class="blog-modal-meta"></div>
+          <div id="blog-modal-content" class="blog-modal-content"></div>
+          <div id="blog-modal-links" class="blog-modal-links"></div>
+        </div>
+      </div>
 
       <!-- Contact -->
       <section class="contact" id="contact">
@@ -260,15 +374,34 @@
           <a href="mailto:devlab@josechezuria.com">devlab@josechezuria.com</a>
         </p>
         <div class="contact-icons">
-          <a href="https://github.com/josechezuria" target="_blank"
-            ><img src="/images/github.png" alt="GitHub"
-          /></a>
-          <a href="https://x.com/josechezuria" target="_blank"
-            ><img src="/images/x.png" alt="X (Twitter)"
-          /></a>
-          <a href="https://instagram.com/josechezuria" target="_blank"
-            ><img src="/images/instagram.png" alt="Instagram"
-          /></a>
+          <a
+            href="https://github.com/josechezuria"
+            target="_blank"
+            aria-label="GitHub"
+          >
+            <i class="fab fa-github"></i>
+          </a>
+          <a
+            href="https://x.com/josechezuria"
+            target="_blank"
+            aria-label="X (Twitter)"
+          >
+            <i class="fab fa-x-twitter"></i>
+          </a>
+          <a
+            href="https://instagram.com/josechezuria"
+            target="_blank"
+            aria-label="Instagram"
+          >
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a
+            href="https://linkedin.com/in/josechezuria"
+            target="_blank"
+            aria-label="LinkedIn"
+          >
+            <i class="fab fa-linkedin"></i>
+          </a>
         </div>
       </section>
 
@@ -279,7 +412,6 @@
       </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="/index.js"></script>
   </body>
 </html>

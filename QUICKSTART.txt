@@ -1,0 +1,470 @@
+================================================================================
+                    PORTFOLIO - QUICK START GUIDE
+================================================================================
+
+This guide covers common workflows for development and production deployment.
+
+================================================================================
+                        FIRST TIME SETUP
+================================================================================
+
+1. Install Dependencies
+   -----------------------
+   npm install
+
+2. Create Environment File
+   -----------------------
+   cp .env.example .env
+
+   Edit .env if needed:
+   nano .env
+
+   Default settings:
+   PORT=3001
+   NODE_ENV=development
+
+3. Compile CSS (First Time)
+   -----------------------
+   npm run build:css
+
+4. You're ready! Choose a mode below.
+
+================================================================================
+                    LOCAL DEVELOPMENT (No Docker)
+================================================================================
+
+Start Development Server
+-----------------------
+npm run dev
+
+This will:
+- Start nodemon on http://localhost:3001
+- Auto-reload on file changes
+- Run in development mode
+- Watch for changes in JS files
+
+Stop Development Server
+-----------------------
+Press CTRL+C in the terminal
+
+Compile SCSS Changes
+-----------------------
+npm run build:css
+
+Then nodemon will auto-reload
+
+================================================================================
+                DOCKER DEVELOPMENT (With Hot Reload)
+================================================================================
+
+Build Development Image (First Time)
+-----------------------
+npm run docker:build:dev
+
+Start Development Container
+-----------------------
+npm run docker:up:dev
+
+This will:
+- Start container in background
+- Mount local files (hot reload)
+- Run on http://localhost:3001
+- Auto-restart on changes
+
+Stop Development Container
+-----------------------
+npm run docker:down:dev
+
+View Logs
+-----------------------
+npm run docker:logs
+
+Restart Container
+-----------------------
+docker-compose -f docker-compose.dev.yml restart
+
+================================================================================
+                    DOCKER PRODUCTION DEPLOYMENT
+================================================================================
+
+Build Production Image
+-----------------------
+npm run docker:build
+
+This will:
+- Build optimized image
+- Compile SCSS to CSS
+- Remove dev dependencies
+- Create non-root user
+- Apply security hardening
+
+Start Production Container
+-----------------------
+npm run docker:up
+
+This will:
+- Start container in background
+- Run on http://localhost:3001
+- Enable production optimizations
+- Apply security restrictions
+
+Stop Production Container
+-----------------------
+npm run docker:down
+
+View Logs
+-----------------------
+npm run docker:logs
+
+Restart Container
+-----------------------
+npm run docker:restart
+
+================================================================================
+          RUNNING PRODUCTION AND DEVELOPMENT SIMULTANEOUSLY
+================================================================================
+
+You can run both environments at the same time using different ports:
+
+Option 1: Production on 3001, Dev on 3002
+-----------------------
+
+1. Edit docker-compose.dev.yml:
+   Change:   - "${PORT:-3001}:3001"
+   To:       - "3002:3001"
+
+   Also change environment PORT:
+   - PORT=3001
+
+2. Start production:
+   npm run docker:up
+
+3. Start development:
+   npm run docker:up:dev
+
+4. Access:
+   Production: http://localhost:3001
+   Development: http://localhost:3002
+
+Option 2: Production on 3001, Local Dev on Different Port
+-----------------------
+
+1. Start production container:
+   npm run docker:up
+
+2. In a separate terminal, create .env.dev:
+   PORT=3002
+   NODE_ENV=development
+
+3. Start local dev server:
+   PORT=3002 npm run dev
+
+4. Access:
+   Production: http://localhost:3001
+   Development: http://localhost:3002
+
+Stop Both Environments
+-----------------------
+npm run docker:down        # Stop production
+npm run docker:down:dev    # Stop dev container
+
+OR press CTRL+C if using local dev server
+
+================================================================================
+                  SWITCHING BETWEEN ENVIRONMENTS
+================================================================================
+
+From Local Dev to Docker Dev
+-----------------------
+1. Stop local dev: CTRL+C
+2. Start Docker dev: npm run docker:up:dev
+
+From Docker Dev to Local Dev
+-----------------------
+1. Stop Docker dev: npm run docker:down:dev
+2. Start local dev: npm run dev
+
+From Dev to Production (Docker)
+-----------------------
+1. Stop dev: npm run docker:down:dev (or CTRL+C)
+2. Build production: npm run docker:build
+3. Start production: npm run docker:up
+
+From Production to Dev (Docker)
+-----------------------
+1. Stop production: npm run docker:down
+2. Start dev: npm run docker:up:dev
+
+================================================================================
+                    UPDATING & REBUILDING
+================================================================================
+
+After Code Changes (Local Dev)
+-----------------------
+Nodemon auto-reloads, no action needed
+
+After Code Changes (Docker Dev)
+-----------------------
+Changes auto-apply (volumes are mounted)
+
+After Code Changes (Docker Production)
+-----------------------
+1. npm run docker:down
+2. npm run docker:build
+3. npm run docker:up
+
+After CSS Changes (SCSS)
+-----------------------
+npm run build:css
+
+Then:
+- Local dev: Auto-reloads
+- Docker dev: Rebuild container
+- Docker prod: Rebuild container
+
+After Dependency Changes (package.json)
+-----------------------
+1. npm install
+2. Rebuild Docker images:
+   npm run docker:build:dev    # For dev
+   npm run docker:build        # For production
+3. Restart containers
+
+================================================================================
+                      TROUBLESHOOTING
+================================================================================
+
+Port Already in Use
+-----------------------
+Error: "Port 3001 is already in use"
+
+Solution:
+# Find what's using the port
+sudo lsof -i :3001
+
+# Kill the process (replace PID)
+kill -9 <PID>
+
+# Or stop Docker containers
+docker ps
+docker stop <container-id>
+
+Container Won't Start
+-----------------------
+1. Check logs:
+   npm run docker:logs
+
+2. Check if port is available:
+   sudo lsof -i :3001
+
+3. Remove old containers:
+   docker ps -a
+   docker rm portfolio-josechezuria
+   docker rm portfolio-josechezuria-dev
+
+Cannot Access Site
+-----------------------
+1. Check if server is running:
+   docker ps                    # Docker
+   OR
+   ps aux | grep node          # Local
+
+2. Check correct port:
+   Local: http://localhost:3001
+   Docker: http://localhost:3001
+
+3. Check firewall settings
+
+CSS Not Updating
+-----------------------
+1. Compile SCSS:
+   npm run build:css
+
+2. For Docker, rebuild:
+   npm run docker:build
+   npm run docker:restart
+
+Permission Denied (Docker)
+-----------------------
+# On Linux, you may need sudo
+sudo docker-compose up -d
+
+# Or add user to docker group
+sudo usermod -aG docker $USER
+# Then logout and login again
+
+================================================================================
+                    HOMELAB DEPLOYMENT
+================================================================================
+
+Initial Deployment to Homelab
+-----------------------
+1. SSH into your homelab server
+   ssh user@homelab-ip
+
+2. Clone repository
+   git clone <your-repo-url>
+   cd portfolio-josechezuria-2025
+
+3. Create .env file
+   cp .env.example .env
+   nano .env
+
+   Set:
+   PORT=3001
+   NODE_ENV=production
+
+4. Build and start
+   docker compose up -d
+
+5. Check logs
+   docker logs -f portfolio-josechezuria
+
+6. Access at http://homelab-ip:3001
+
+Update Deployment
+-----------------------
+1. SSH into homelab
+   ssh user@homelab-ip
+   cd portfolio-josechezuria-2025
+
+2. Pull latest changes
+   git pull origin main
+
+3. Rebuild and restart
+   docker compose down
+   docker compose build
+   docker compose up -d
+
+4. Verify
+   docker logs -f portfolio-josechezuria
+
+================================================================================
+                      USEFUL COMMANDS
+================================================================================
+
+Docker Commands
+-----------------------
+docker ps                           # List running containers
+docker ps -a                        # List all containers
+docker logs portfolio-josechezuria  # View logs
+docker stats portfolio-josechezuria # View resource usage
+docker exec -it portfolio-josechezuria sh  # Shell into container
+docker system prune -a              # Clean up unused images
+
+Git Commands
+-----------------------
+git status                          # Check changes
+git add .                           # Stage changes
+git commit -m "message"             # Commit
+git push origin main                # Push to remote
+
+NPM Commands
+-----------------------
+npm install                         # Install dependencies
+npm update                          # Update dependencies
+npm audit                           # Check vulnerabilities
+npm audit fix                       # Fix vulnerabilities
+
+Health Check
+-----------------------
+curl http://localhost:3001          # Test if server responds
+curl -I http://localhost:3001       # Check headers
+
+================================================================================
+                        PORT REFERENCE
+================================================================================
+
+Default Setup:
+-----------------------
+Production:  http://localhost:3001
+Development: http://localhost:3001  (use one at a time)
+
+Recommended for Running Both:
+-----------------------
+Production:  http://localhost:3001
+Development: http://localhost:3002
+
+Homelab Access:
+-----------------------
+Local:      http://homelab-ip:3001
+Tailscale:  http://tailscale-ip:3001
+Domain:     https://josechezuria.com (via Nginx)
+
+================================================================================
+                      DEVELOPMENT WORKFLOW
+================================================================================
+
+Daily Development (Local)
+-----------------------
+1. npm run dev
+2. Edit files
+3. Browser auto-refreshes
+4. CTRL+C when done
+
+Daily Development (Docker)
+-----------------------
+1. npm run docker:up:dev
+2. Edit files
+3. Changes auto-apply
+4. npm run docker:down:dev when done
+
+Before Committing
+-----------------------
+1. npm run build:css              # Compile CSS
+2. git status                     # Check what changed
+3. Test production build:
+   npm run docker:build
+   npm run docker:up
+   # Test site
+   npm run docker:down
+4. git add .
+5. git commit -m "description"
+6. git push origin main
+
+================================================================================
+                      ENVIRONMENT SUMMARY
+================================================================================
+
+Local Development (npm run dev)
+-----------------------
+✓ Fastest iteration
+✓ Direct file access
+✓ Easiest debugging
+✓ No Docker overhead
+- Not production-like
+- No security hardening
+
+Docker Development (npm run docker:up:dev)
+-----------------------
+✓ Closer to production
+✓ Isolated environment
+✓ Hot reload enabled
+✓ Easy to reset
+- Slower than local
+- Some Docker overhead
+
+Docker Production (npm run docker:up)
+-----------------------
+✓ Production-ready
+✓ Full security hardening
+✓ Optimized performance
+✓ Resource limits
+- No hot reload
+- Requires rebuild for changes
+- Best for testing final build
+
+================================================================================
+                          HELP
+================================================================================
+
+For more detailed information, see:
+
+- DEPLOYMENT.md  : Full deployment guide
+- SECURITY.md    : Security configuration and best practices
+- README.md      : Project overview
+- CLAUDE.md      : Development guidelines
+
+For issues: devlab@josechezuria.com
+
+================================================================================

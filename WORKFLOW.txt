@@ -1,0 +1,360 @@
+================================================================================
+                    DEV TO PRODUCTION WORKFLOW
+                    Simple Guide for Beginners
+================================================================================
+
+PORTS SETUP:
+  Development: http://localhost:3002
+  Production:  http://localhost:3001 (or your homelab IP)
+
+================================================================================
+                    DAILY DEVELOPMENT WORKFLOW
+================================================================================
+
+1. START WORKING ON NEW FEATURES
+   --------------------------------
+   cd portfolio-josechezuria-2025
+   PORT=3002 npm run dev
+
+   This starts development server on port 3002
+   ✓ Auto-reloads when you save files
+   ✓ Fast feedback
+   ✓ No need to rebuild
+
+2. MAKE YOUR CHANGES
+   --------------------------------
+   - Edit HTML, CSS, JS files
+   - Save files
+   - Browser auto-refreshes
+   - Test at http://localhost:3002
+
+3. IF YOU CHANGE SCSS (STYLES)
+   --------------------------------
+   Open another terminal:
+   npm run build:css
+
+   This compiles SCSS to CSS
+   Server auto-reloads with new styles
+
+4. WHEN DONE FOR THE DAY
+   --------------------------------
+   Press CTRL+C in terminal to stop
+
+================================================================================
+          MOVING YOUR CODE FROM DEV TO PRODUCTION
+================================================================================
+
+IMPORTANT: You work on DEV, then "promote" changes to PRODUCTION
+
+Step-by-Step Process:
+----------------------
+
+1. YOU'RE DONE WITH NEW FEATURES IN DEV
+   - Tested everything on http://localhost:3002
+   - Everything looks good
+   - Ready to go live
+
+2. COMMIT YOUR CHANGES TO GIT
+   --------------------------------
+   git add .
+   git commit -m "Add new blog feature"
+   git push origin main
+
+   This saves your work and backs it up
+
+3. ON YOUR HOMELAB (SSH INTO IT)
+   --------------------------------
+   ssh user@your-homelab-ip
+   cd portfolio-josechezuria-2025
+
+4. PULL THE LATEST CODE
+   --------------------------------
+   git pull origin main
+
+   This gets your new code to the homelab
+
+5. REBUILD PRODUCTION
+   --------------------------------
+   docker compose down              # Stop old version
+   docker compose build             # Build with new code
+   docker compose up -d             # Start new version
+
+6. VERIFY IT WORKS
+   --------------------------------
+   docker logs -f portfolio-josechezuria
+
+   Visit: http://your-homelab-ip:3001
+
+   If good, you're done! ✓
+
+================================================================================
+                    HOMELAB DOCKER COMMANDS
+================================================================================
+
+When you're on your homelab server:
+
+START PRODUCTION (First Time)
+------------------------------
+cd portfolio-josechezuria-2025
+docker compose build
+docker compose up -d
+
+CHECK IF PRODUCTION IS RUNNING
+------------------------------
+docker ps
+# Should show "portfolio-josechezuria" running
+
+VIEW PRODUCTION LOGS
+------------------------------
+docker logs -f portfolio-josechezuria
+# Press CTRL+C to exit logs
+
+STOP PRODUCTION
+------------------------------
+docker compose down
+
+RESTART PRODUCTION (After Code Changes)
+------------------------------
+git pull origin main             # Get latest code
+docker compose down              # Stop
+docker compose build             # Rebuild with new code
+docker compose up -d             # Start
+docker logs -f portfolio-josechezuria  # Check logs
+
+================================================================================
+                    RUNNING BOTH DEV AND PROD
+================================================================================
+
+You can run BOTH at the same time to test!
+
+ON YOUR HOMELAB:
+----------------
+
+Option 1: Both with Docker
+   # Start Production (port 3001)
+   docker compose up -d
+
+   # Start Development (port 3002)
+   docker compose -f docker-compose.dev.yml up -d
+
+   Now you have:
+   - Production: http://homelab-ip:3001
+   - Development: http://homelab-ip:3002
+
+Option 2: Production Docker + Local Dev
+   # On homelab: Start Production
+   docker compose up -d
+
+   # On your laptop: Start Dev
+   PORT=3002 npm run dev
+
+   Now you have:
+   - Production on homelab: http://homelab-ip:3001
+   - Development on laptop: http://localhost:3002
+
+================================================================================
+                    TYPICAL WORKFLOW EXAMPLE
+================================================================================
+
+Monday: Start New Feature
+--------------------------
+1. On laptop: PORT=3002 npm run dev
+2. Edit code, test on http://localhost:3002
+3. Looks good? Continue...
+
+Tuesday: Finish Feature
+--------------------------
+1. Still working in dev
+2. Make final changes
+3. Test thoroughly on port 3002
+
+Wednesday: Deploy to Production
+--------------------------
+1. Commit code:
+   git add .
+   git commit -m "Added contact form"
+   git push origin main
+
+2. SSH to homelab:
+   ssh user@homelab
+
+3. Update production:
+   cd portfolio-josechezuria-2025
+   git pull origin main
+   docker compose down
+   docker compose build
+   docker compose up -d
+
+4. Test: http://homelab-ip:3001
+
+5. Done! Your feature is now LIVE
+
+================================================================================
+                    COMMON SCENARIOS
+================================================================================
+
+Scenario 1: Quick CSS Change
+------------------------------
+1. Edit SCSS file on laptop
+2. npm run build:css
+3. Test on dev (port 3002)
+4. Git commit and push
+5. On homelab: git pull + docker rebuild
+
+Scenario 2: Testing Before Going Live
+------------------------------
+1. Have production running (port 3001)
+2. Start dev container (port 3002)
+3. Make changes in dev
+4. Compare both versions
+5. Happy? Deploy dev changes to prod
+
+Scenario 3: Emergency Fix
+------------------------------
+1. Fix issue in dev environment
+2. Test thoroughly
+3. Git commit and push immediately
+4. SSH to homelab
+5. Quick rebuild: docker compose down && docker compose build && docker compose up -d
+
+================================================================================
+                    KEY CONCEPTS
+================================================================================
+
+DEVELOPMENT (Port 3002)
+-----------------------
+✓ Where you make changes
+✓ Test new features
+✓ Break things safely
+✓ Fast iteration
+✗ Not for public access
+
+PRODUCTION (Port 3001)
+-----------------------
+✓ Live version
+✓ Stable and tested
+✓ Public facing
+✓ Backed by Docker security
+✗ Don't experiment here
+
+GIT IS YOUR BRIDGE
+-----------------------
+Dev (laptop) → Git Push → Git Pull → Production (homelab)
+
+You code locally, push to GitHub, pull on homelab, rebuild.
+
+================================================================================
+                    FILE LOCATIONS
+================================================================================
+
+.env           → Production config (port 3001, NODE_ENV=production)
+.env.dev       → Development config (port 3002, NODE_ENV=development)
+.env.example   → Template (don't edit, for reference)
+
+docker-compose.yml      → Production Docker setup (port 3001)
+docker-compose.dev.yml  → Development Docker setup (port 3002)
+
+================================================================================
+                    CHEAT SHEET
+================================================================================
+
+LOCAL DEVELOPMENT (Your Laptop)
+-------------------------------
+Start:  PORT=3002 npm run dev
+Stop:   CTRL+C
+CSS:    npm run build:css
+
+HOMELAB PRODUCTION (Docker)
+-------------------------------
+Start:  docker compose up -d
+Stop:   docker compose down
+Logs:   docker logs -f portfolio-josechezuria
+Rebuild: docker compose down && docker compose build && docker compose up -d
+
+UPDATE PRODUCTION FROM DEV
+-------------------------------
+1. git add . && git commit -m "message" && git push
+2. ssh user@homelab
+3. cd portfolio-josechezuria-2025
+4. git pull origin main
+5. docker compose down && docker compose build && docker compose up -d
+
+CHECK WHAT'S RUNNING
+-------------------------------
+Local:   lsof -i :3002
+Homelab: docker ps
+
+================================================================================
+                    TROUBLESHOOTING
+================================================================================
+
+"Port already in use"
+---------------------
+# Find what's using it
+lsof -i :3002    (or :3001)
+
+# Kill it
+kill -9 <PID>
+
+# Or restart Docker
+docker compose down
+
+"Changes not showing up"
+---------------------
+Local Dev: Should auto-reload (check if nodemon is running)
+Docker: Need to rebuild (docker compose build)
+
+"Can't access homelab"
+---------------------
+1. Check Docker is running: docker ps
+2. Check firewall allows port 3001
+3. Verify homelab IP address
+4. Try from Tailscale if configured
+
+================================================================================
+                    BEST PRACTICES
+================================================================================
+
+✓ Always test in DEV first (port 3002)
+✓ Commit often to git
+✓ Test PRODUCTION build before deploying
+✓ Keep .env file safe (never commit)
+✓ Check logs after deployment
+✓ Make small, incremental changes
+✓ Keep DEV and PROD separate
+
+✗ Don't edit code directly on homelab
+✗ Don't skip git commits
+✗ Don't deploy untested code
+✗ Don't work directly in production
+
+================================================================================
+                    NEED HELP?
+================================================================================
+
+1. Check logs first:
+   - Local: Look at terminal output
+   - Docker: docker logs -f portfolio-josechezuria
+
+2. Check these files:
+   - QUICKSTART.txt (detailed commands)
+   - DEPLOYMENT.md (full deployment guide)
+   - SECURITY.md (security info)
+
+3. Common issues in QUICKSTART.txt troubleshooting section
+
+================================================================================
+                    SUMMARY
+================================================================================
+
+1. DEVELOP on port 3002 (your laptop)
+2. TEST everything works
+3. COMMIT to git (git add, commit, push)
+4. SSH to homelab
+5. PULL latest code (git pull)
+6. REBUILD production (docker compose rebuild)
+7. VERIFY it works
+
+That's it! You're moving code from DEV → GIT → PRODUCTION
+
+================================================================================

@@ -1,0 +1,282 @@
+================================================================================
+                    PORT CONFIGURATION GUIDE
+            How Ports Work in This Secure Setup
+================================================================================
+
+SECURITY NOTE:
+--------------
+All port numbers are now stored in .env files which are NEVER committed to Git.
+The public repository contains NO hardcoded port numbers.
+
+================================================================================
+                    ENVIRONMENT FILES
+================================================================================
+
+.env (Production) - NEVER COMMITTED
+------------------------------------
+Contains your actual production port numbers.
+File location: /Users/joseechezuria/Documents/Website/portfolio-josechezuria-2025/.env
+
+Example content:
+    NODE_ENV=production
+    INTERNAL_PORT=3001
+    EXTERNAL_PORT=3001
+
+.env.dev (Development) - NEVER COMMITTED
+-----------------------------------------
+Contains your development port numbers.
+File location: /Users/joseechezuria/Documents/Website/portfolio-josechezuria-2025/.env.dev
+
+Example content:
+    NODE_ENV=development
+    INTERNAL_PORT_DEV=3001
+    EXTERNAL_PORT_DEV=3002
+
+.env.example (Template) - COMMITTED TO GIT
+-------------------------------------------
+Safe template with placeholder values (XXXX).
+Used by others who clone your repository.
+
+================================================================================
+                    HOW PORTS WORK
+================================================================================
+
+INTERNAL_PORT
+-------------
+- Port the application uses INSIDE the Docker container
+- Usually set to 3001 for both dev and prod
+- Not visible from outside the container
+
+EXTERNAL_PORT
+-------------
+- Port you access from your browser/network
+- This is what people connect to
+- Production: Usually 3001
+- Development: Usually 3002 (to avoid conflicts)
+
+Example:
+    INTERNAL_PORT=3001
+    EXTERNAL_PORT=8080
+
+    Means: App runs on 3001 inside container, but you access it via port 8080
+
+================================================================================
+                    SETUP INSTRUCTIONS
+================================================================================
+
+First Time Setup:
+-----------------
+1. Copy the example file:
+   cp .env.example .env
+
+2. Edit .env with your actual ports:
+   nano .env
+
+   Change XXXX to your real port numbers:
+   INTERNAL_PORT=3001
+   EXTERNAL_PORT=3001
+
+3. For development, also create .env.dev:
+   cp .env.example .env.dev
+   nano .env.dev
+
+   Set dev ports:
+   INTERNAL_PORT_DEV=3001
+   EXTERNAL_PORT_DEV=3002
+
+4. NEVER commit .env or .env.dev to git!
+   (They're already in .gitignore)
+
+================================================================================
+                    DEPLOYING TO HOMELAB
+================================================================================
+
+When you clone this repo on your homelab:
+
+1. SSH to homelab
+   ssh user@homelab-ip
+
+2. Clone the repo
+   git clone your-repo-url
+   cd portfolio-josechezuria-2025
+
+3. Create .env from template
+   cp .env.example .env
+
+4. Edit with YOUR port numbers
+   nano .env
+
+   Example:
+   INTERNAL_PORT=3001
+   EXTERNAL_PORT=3001
+
+   (Use whatever ports you want!)
+
+5. Build and run
+   docker compose build
+   docker compose up -d
+
+================================================================================
+                    CHANGING PORTS
+================================================================================
+
+To Change Production Port:
+---------------------------
+1. Edit .env file:
+   nano .env
+
+2. Change the EXTERNAL_PORT:
+   EXTERNAL_PORT=8080
+
+3. Rebuild Docker:
+   docker compose down
+   docker compose up -d
+
+4. Access at new port:
+   http://homelab-ip:8080
+
+To Change Development Port:
+----------------------------
+1. Edit .env.dev file:
+   nano .env.dev
+
+2. Change the EXTERNAL_PORT_DEV:
+   EXTERNAL_PORT_DEV=3003
+
+3. Restart dev container:
+   docker compose -f docker-compose.dev.yml down
+   docker compose -f docker-compose.dev.yml up -d
+
+4. Access at new port:
+   http://localhost:3003
+
+================================================================================
+                    SECURITY VERIFICATION
+================================================================================
+
+Verify Your Setup is Secure:
+-----------------------------
+
+1. Check .env is not tracked:
+   git status
+
+   You should NOT see .env or .env.dev in the list
+
+2. Check .env is ignored:
+   git check-ignore -v .env
+
+   Should show: ".gitignore:21:.env	.env"
+
+3. Verify no ports in public files:
+   grep -r "300[0-9]" docker-compose*.yml Dockerfile
+
+   Should return nothing (or only in comments)
+
+4. Check what will be pushed:
+   git status --short
+
+   Verify .env and .env.dev are NOT listed
+
+================================================================================
+                    WHAT'S IN THE PUBLIC REPOSITORY
+================================================================================
+
+Files That WILL Be Pushed (Safe):
+----------------------------------
+✓ docker-compose.yml (uses ${EXTERNAL_PORT} variables)
+✓ docker-compose.dev.yml (uses ${EXTERNAL_PORT_DEV} variables)
+✓ Dockerfile (no hardcoded ports)
+✓ .env.example (only XXXX placeholders)
+✓ server.js (uses environment variables)
+✓ All documentation files
+
+Files That WON'T Be Pushed (Sensitive):
+----------------------------------------
+✗ .env (your real production ports)
+✗ .env.dev (your real development ports)
+✗ Any file with real port numbers
+✗ Any file with sensitive configuration
+
+================================================================================
+                    TROUBLESHOOTING
+================================================================================
+
+"Port already in use" Error:
+-----------------------------
+Different service is using your port. Change EXTERNAL_PORT in .env to a
+different number:
+
+    EXTERNAL_PORT=3002
+
+Then restart Docker.
+
+Can't Access Application:
+--------------------------
+1. Check what port is configured:
+   cat .env | grep EXTERNAL_PORT
+
+2. Make sure you're accessing the right port:
+   http://localhost:YOUR_EXTERNAL_PORT
+
+3. Check Docker is using the right port:
+   docker ps
+
+   Look for "0.0.0.0:PORT->PORT/tcp"
+
+Variables Not Working:
+----------------------
+1. Make sure .env file exists:
+   ls -la .env
+
+2. Make sure variables are set:
+   cat .env
+
+3. Restart Docker to load new values:
+   docker compose down
+   docker compose up -d
+
+================================================================================
+                    BEST PRACTICES
+================================================================================
+
+✓ Always use .env files for configuration
+✓ Never hardcode port numbers in application code
+✓ Never commit .env files to git
+✓ Always commit .env.example as a template
+✓ Document which variables are required
+✓ Use different ports for dev and prod
+✓ Use environment variables in docker-compose
+
+✗ Don't hardcode ports in files
+✗ Don't commit sensitive configuration
+✗ Don't use the same port for dev and prod
+✗ Don't share your .env file
+✗ Don't skip .env.example
+✗ Don't forget to create .env on new deployments
+
+================================================================================
+                    SUMMARY
+================================================================================
+
+Your Configuration:
+-------------------
+Production:  Uses .env (EXTERNAL_PORT)
+Development: Uses .env.dev (EXTERNAL_PORT_DEV)
+Template:    Uses .env.example (XXXX placeholders)
+
+Security:
+---------
+✓ No hardcoded ports in repository
+✓ All real ports in .gitignored .env files
+✓ Safe to push to public GitHub
+✓ Each deployment uses custom ports
+
+Workflow:
+---------
+1. Clone repo
+2. Copy .env.example to .env
+3. Edit .env with your ports
+4. Deploy with Docker
+5. Access at your custom port
+
+================================================================================

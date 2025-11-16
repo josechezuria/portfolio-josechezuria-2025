@@ -17,15 +17,23 @@ pids
 *.seed
 *.pid.lock
 
-# dotenv environment variables
+# dotenv environment variables - NEVER COMMIT THESE
 .env
+.env.dev
+.env.prod
 .env.local
 .env.*.local
+.env.production
+.env.development
+.env.test
+.env.staging
+
+# BUT allow .env.example (template file)
+!.env.example
 
 # Docker
 docker-compose.override.yml
 .docker/
-.dockerignore
 
 # Build outputs
 dist/
@@ -50,3 +58,69 @@ coverage/
 
 # Misc
 *.tgz
+
+# Security-sensitive files
+*.pem
+*.key
+*.cert
+*.crt
+*.csr
+credentials.json
+secrets/
+*.secret
+*.backup
+.secrets
+
+# Sass
+.sass-cache/
+*.css.map
+
+# Session and temp files
+sessions/
+*.session
+tmp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration files that might contain sensitive data
+config.local.js
+config.local.json
+settings.local.json
+
+# Backup files
+*.backup
+*.bak
+*.old
+*.orig
+.backup/
+
+# Private notes and documentation
+PRIVATE.md
+NOTES.md
+TODO.md
+
+# Claude Code
+CLAUDE.md
+
+# Local development files
+.local/
+local/
+
+# Any file with 'secret', 'private', or 'local' in the name
+*secret*
+*private*
+*.local.*
+
+# SSH keys (just in case)
+id_rsa
+id_rsa.pub
+*.pem
+*.ppk
+
+# API keys and tokens (common filenames)
+api-keys.txt
+tokens.txt
+credentials.txt
